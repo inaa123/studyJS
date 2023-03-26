@@ -21,10 +21,25 @@ for(const p of products) {
 log(over200);
 
 //refactoring 리팩토링
-const filter = (iter) => { //filter라는 함수가 있으면 filter = () => {}. // 어떤 값이든 받을 수있게 이터러블 프로토콜을 따른다 = iter. //
+const filter = (f, iter) => { //filter라는 함수가 있으면 filter = () => {}. // 어떤 값이든 받을 수있게 이터러블 프로토콜을 따른다 = iter. //
     let res = [];
     for(const a of iter) {
-        if (a.price < 200) res.push(a); // 어떤 조건일때 걸러서 푸쉬할지 함수(f)를 받아서(24번줄에서) 보조함수에게(27번줄) 위임한다.\)
+        if (f(a)) res.push(a); // 어떤 조건일때 걸러서 푸쉬할지 함수(f)를 받아서(24번줄에서 f) 보조함수에게(27번줄 f(a)) 위임한다.\)
     }
     return res; //return하는 값은 함수의 리턴값을 출력?
 };
+//내부의 값이 key value로 구분됭 상품
+log(...filter(p => p.price < 300, products)); //filter를하면서 상품을받아서(p => ) if문 안쪽에서 평가되도록 보조함수를 작성한다(> p.price < 300)
+
+//내부의 값이 [1,2,3,4]이렇게 들어있을때도 걸러낼 수 있음!
+log(filter(n => n % 2, [1, 2, 3, 4])); 
+//내부의 값의 다형성은 보조함수를 통해서 지원해준다. 외부의?? 경우는 이터러블 프로토콜을 따르는 것을 통해서 다형성을 지원해준다.
+
+log(filter(n => n % 2, function* () { 
+    yield 1;
+    yield 2;
+    yield 3;
+    yield 4;
+    yield 5;
+}() ));
+//filter역시 이터러블 프로토콜을 따른다.
