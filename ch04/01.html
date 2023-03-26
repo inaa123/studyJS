@@ -1,0 +1,50 @@
+<script>const log = console.log;</script>
+<script>
+const map = (f, iter) => { 
+    let res = [];
+    for (const a of iter) {
+        res.push(f(a));
+    }
+    return res;
+};
+</script>
+
+<script>
+    // document.querySelectorAll('*') 의 결과가 array처럼 생겨도.map(el => el.nodeName) 이런 함수 사용할 수 없다.
+    // log(document.querySelectorAll('*').map(el => el.nodeName)); 안됨 
+    // document.querySelectorAll('*')로 얻은 값을 map을 통해 안에 있는 어떤 값을 el => el.nodeName 수집해보려할 때 에러남! 
+    log(document.querySelectorAll('*').map); // 이코드엔 map이없음!!! undefined!
+
+    log([1, 2, 3].map(a => a + 1)); // array에 map을 통해서 값을 수집하여 뭔가를 만들 수 있다.
+    //도큐먼트쿼리셀렉터는 array를 상속받은 객체가 아니기때문에  map을 사용할 수 없다. 프로토타입에 map함수가 구현안돼있다
+
+    log(map(el => el.nodeName, document.querySelectorAll('*'))); //이건 잘 작동됨 document.querySelectorAll가 이터러블 프로토콜을 따르고 있기 때문이다.
+    
+    const it = document.querySelectorAll('*')[Symbol.iterator](); //document.querySelector가 iterable 프로토콜 따르는 걸 보여주기
+    log(it); //Symbol iterator를 실행해보면 iterator가 나온다.
+    log(it.next()); //next이용하여 내부값 순회해보기!
+    log(it.next());
+    log(it.next());
+    log(it.next());
+    log(it.next());
+    log(it.next()); // map = (f, iter) 이 map함수는 이터러블 프로토콜을 따르는 for문을 사용했기 때문에 순회 가능하다.
+    //map = (f, iter) 이 map함수는 array뿐만 아니라 iterable 프로토콜을 따르는 많은 함수들을 다 사용할 수 있다.
+    //이를 통해 아래와 같은 함수를 사용할 수 있따. (예시 제너레이터함수)
+    function *gen(){
+        yield 2;
+        if(false) yield 3;
+        yield 4;
+    }
+    log(map(a => a * a, gen())); //gen 함수 수집가능
+    //즉! 이 map함수는 다형성이 높다는 것을 알 수 있다. 거의 모든 것을 map을 할 수 있다.
+
+    //이터러블프로토콜 따랐을 때 또 다른 조합성
+    
+    let m = new Map(); //map선언
+    m.set('a', 10); //map에 키와 value들 담는다. 이 값들은 iterable임.
+    m.set('b', 20);
+    log(m[Symbol.iterator]()); // iterator반환함 .
+    // 이 m을 map함수의 이터레이터(iter)로 사용할 수 있음
+    log(map(([k, a]) => [k, a * 2] , m)); //array로 들어오니 key와 값을 나눠서 받을 수 있음[k, a]
+    log(new Map(map(([k, a]) => [k, a * 10] , m))); //새로운 Map객체 만들기 가능
+</script>

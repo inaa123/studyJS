@@ -1,3 +1,4 @@
+
 const log = console.log;
 
 const products = [
@@ -34,4 +35,4 @@ const map = (f, iter) => {
 map(p => p.name, products);
 
 log('------------------------------------------');
-//[이터러블 프로토콜을 따른 map의 다형성]
+
