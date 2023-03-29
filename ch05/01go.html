@@ -1,0 +1,36 @@
+<script src="lib/fx.js"></script>
+<script>
+//ch05 : 코드를 값으로 다루어 표현력 높이기
+//함수형 프로그래밍에선 코드를 값으로 다루는 방법을 많이 사용한다.
+    const products = [
+        { name : '일', price: 100 },
+        { name : '이', price: 200 },    
+        { name : '삼', price: 150 },
+        { name : '사', price: 300 },
+        { name : '오', price: 250 }
+    ];
+
+    const add = (a, b) => a + b;
+    log(
+        reduce(
+            add,
+            map(p => p.price,
+                filter(p => p.price < 200, products))));
+    console.clear();
+</script>
+<!-- 위 코드를 읽기 편하게 만들어보기-->
+
+<script>
+//go함수 만들기
+    const go = (...list) => {
+        log(list);
+    }; //go라는 함수가 있다면 go = () => 
+
+    go(
+        0,
+        a => a + 1,
+        a => a + 10,
+        a => a + 100,
+        log); //log를 찍어보면 값이 연속적으로.. 0이 a로 가서 a + 1이되고 a +1이 a자리 가서 값이 a + 10이 되고..
+        //이 코드들은 인자들(0, a=> a+1, a=>a+10, a=>a+100)을 받아서 하나의 값으로 축약해간다.
+</script>
