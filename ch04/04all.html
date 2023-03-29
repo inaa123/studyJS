@@ -1,0 +1,26 @@
+<!-- map filter reduce 중첩 사용해보기 --> 
+<script src="lib/fx.js"></script>
+
+<script>
+    const products = [
+        { name : '일', price: 100 },
+        { name : '이', price: 200 },    
+        { name : '삼', price: 150 },
+        { name : '사', price: 300 },
+        { name : '오', price: 250 }
+    ];
+
+    //가격 뽑는 map함수
+    log(map(p => p.price, products)); 
+
+    //특정 금액미만 상품 뽑을 땐 map이 갖는 products를 축약해주면 된다.(filter이용해서)
+    log(map(p => p.price, filter(p => p.price < 200, products)));
+    
+    //200 미만의 상품들의 가격을 합친 가격만들기
+    const add = (a, b) => a + b;
+    log(
+        reduce(
+            add, 
+            map(p => p.price, 
+                filter(p => p.price < 200, products)))); //reduce를 사용하면서 map을 통해서 받은 값
+</script>
