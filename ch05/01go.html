@@ -33,8 +33,7 @@
         log);
 
 //pipe함수 만들기 (go와 달리 함수를 리턴하는 함수. 
-    //const pipe = () => () => {}; //함수를 리턴하는 함수! pipe함수는 내부에서 go를 사용하는 함수다.
-    const pipe = (f, ...fs) => (...as) => go(f(...as), ...fs); 
+    const pipe = (f, ...fs) => (...as) => go(f(...as), ...fs);  //const pipe = () => () => {}; //함수를 리턴하는 함수! pipe함수는 내부에서 go를 사용하는 함수다.
         //( ... as : 43번줄 f가 받을 인자. 여러 인자(a, b)를 갖고있다)
         //f - 첫번째 함수 꺼내고, ...fs 나머지 함수 넣어준다.
         //go(f(...as), ...fs) -> 38처럼 f(...as)는 (a, b) => a + b가 실행되는 것.
@@ -62,10 +61,23 @@
     //그럼 fx.js의 curry적용된 함수들은 인자를 하나만 받으면 이후 인자 받도록 기다리는 함수를 리턴하는 함수됨.
     go(
         products, 
-        prodcuts => filter(p => p.price < 200, products), 
-        products => map(p => p.price, products), 
-        prices => reduce(add, prices),
+        prodcuts => filter(p => p.price < 200)(products),  //함수를 먼저 받으면filter(p => p.price < 200)이부분이 함수, 다시 실행하면서 (products)를 이후에 줄수있다.
+        products => map(p => p.price)(products), 
+        prices => reduce(add)(prices),
         log);
+    /*
+
+    //더 간단히(curry)
+    // "products => 를 받아서 filter(~)함수에 (products)를 전달한다 "는 말은 이 자리에 오는 함수가 products를 받는다는 얘기고 
+        그말은 products를 받는 filter(p => p.price < 200)이 만큼의 코드를 평가한 결과가 이 자리에 평가가 되어도 동작한다는 말이다!(products =>, (products)를 지움!)
+    */
+    go(
+        products, 
+        filter(p => p.price < 200), 
+        map(p => p.price), 
+        reduce(add),
+        log);
+//이렇게 함수를 값으로 다루는 함수들을 이용하여 순서를 바꾸는? go함수와 함수를 부분적으로 실행하는 curry함수를 이용해서 깔끔한 코드얻음!
 </script>
 
 <!-- curry함수 만들기-->
@@ -85,4 +97,41 @@
     log(mult3);
     log(mult3(3));
     log(mult3(10));
+</script>
+
+<!-- 함수 조합으로 함수 만들기-->
+<script>
+    const total_price = pipe( //map, reduce중복 코드 제거. go함수에서 map, reduce지우기
+        map(p => p.price),
+        reduce(add));
+
+    const base_total_price = predi => pipe( //filter, total_price 더 간결하게. base_total_price함수는 predi함수를 전달받아 pipe를 리턴.
+        filter(predi), //filter()안에 predi함수 넣어준다.
+        total_price);
+    
+    go(
+        products,
+        base_total_price(p => p.price < 200), 
+        log);
+
+    go(
+        products,
+        base_total_price(p => p.price >= 200),
+        log);
+    
+    /* 이 두함수에서 map, reduce 부분 중복! 중복 제거하기 104줄부터
+    go(
+        products,
+        filter(p => p.price < 200),
+        map(p => p.price),
+        reduce(add),
+        log);
+
+    go(
+        products,
+        filter(p => p.price >= 200),
+        map(p => p.price),
+        reduce(add),
+        log);
+    */
 </script>
