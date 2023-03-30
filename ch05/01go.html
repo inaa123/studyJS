@@ -49,7 +49,7 @@
         console.clear();
 </script>
 
-<!-- 15 ~ 19줄 코드 표현을 바꾸기(go이용) -->
+<!-- 15 ~ 19줄 코드 표현을 바꾸기(go, curry함수) -->
 <script>
     go(
         products, // products로 시작!
@@ -57,4 +57,32 @@
         products => map(p => p.price, products), // products를 받아서 => map을 하겠다. (결과 : 가격들)
         prices => reduce(add, prices), //prices가격들을 받아서 => reduce로 축약하기
         log);
+
+    //curry -> filter, reduce, map 을 curry적용해주면 됨! (fx.js에 map, filter, reduce함수에 curry씌우기)
+    //그럼 fx.js의 curry적용된 함수들은 인자를 하나만 받으면 이후 인자 받도록 기다리는 함수를 리턴하는 함수됨.
+    go(
+        products, 
+        prodcuts => filter(p => p.price < 200, products), 
+        products => map(p => p.price, products), 
+        prices => reduce(add, prices),
+        log);
+</script>
+
+<!-- curry함수 만들기-->
+<script>
+// curry함수 : 함수를 값으로 다루면서 받아 둔 함수를 내가 원하는 시점에 평가시킨다. 
+    /*const curry = f => 
+       (a, ..._) => _.length ? f(a, ..._) : (..._) => f(a, ..._); */ 
+    // f함수를 받아서 함수를 리턴, 리턴된 함수가 실행되었을 때 인자가(a, ..._) 두개 이상이라면 받아둔 함수 실행, 아니라면 함수를 다시 리턴한 후 이후에 받은 인자들을 합쳐서 함수를 실행한다.
+
+    // 함수 사용법 
+    //const mult = (a, b) => a * b; //mult는 a와b를 받아서 a*b를하는 함수 -> 이함수를 curry로 싸서 만들면?
+    const mult = curry((a, b) => a * b);
+    log(mult(1)); // (..._) => f(a, ..._) -> 삼항연산자..그 함수 
+    log(mult(3)(2)); // 6
+
+    const mult3 = mult(3);
+    log(mult3);
+    log(mult3(3));
+    log(mult3(10));
 </script>
