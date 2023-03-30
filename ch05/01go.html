@@ -19,27 +19,42 @@
                 filter(p => p.price < 200, products))));
     console.clear();
 </script>
-<!-- 위 코드를 읽기 편하게 만들어보기-->
 
+<!-- 위 코드를 읽기 편하게 만들어보기-->
 <script>
 //go함수 만들기
     const go = (...args) => reduce((a, f) => f(a), args); // args인자들이 들어오면 첫번째 인자를 다음 함수의 인자로 전달하는 등 연속적으로 하나의 일을 한다.  
                                                         // 이 로직은 reduce라 할수있다.(reduce사용) args를 특정함수로 축약해서 하나의 값으로 만들어간다.                                                           
     go(
-        add(0, 1),
+        //a => a + 1,
+        add(0, 1), //pipe함수에서 추가된함수! 인자를 두개 받는 경우
         a => a + 10,
         a => a + 100,
         log);
 
 //pipe함수 만들기 (go와 달리 함수를 리턴하는 함수. 
     //const pipe = () => () => {}; //함수를 리턴하는 함수! pipe함수는 내부에서 go를 사용하는 함수다.
-    const pipe = (f, ...fs) => (...as) => go(f(...as), ...fs);
-    
+    const pipe = (f, ...fs) => (...as) => go(f(...as), ...fs); 
+        //( ... as : 43번줄 f가 받을 인자. 여러 인자(a, b)를 갖고있다)
+        //f - 첫번째 함수 꺼내고, ...fs 나머지 함수 넣어준다.
+        //go(f(...as), ...fs) -> 38처럼 f(...as)는 (a, b) => a + b가 실행되는 것.
+
     //pipe함수 사용법
     const f = pipe ( //함수f는 pipe함수를 사용하여 만든다.
-        (a, b) => a + b, //pipe함수에 기능 더 추가함. 인자 두개 받을 수 있게!
+        (a, b) => a + b, //pipe함수에 기능 더 추가함. 인자 두개 받을 수 있게! 첫번째 함수는 인자를 두개이상 전달할 수 있게 구성되어야 한다.
         a => a + 10,
-        a => a + 100); //세개의 함수를 연속적으로 실행하여 축약하는 하나의 함수를 만들어서 함수를 리턴한다.
+        a => a + 100);
 
-        log(f(0, 1)); // go함수값과 똑같이 111 출력돼야함.
+        log(f(0, 1));
+        console.clear();
+</script>
+
+<!-- 15 ~ 19줄 코드 표현을 바꾸기(go이용) -->
+<script>
+    go(
+        products, // products로 시작!
+        prodcuts => filter(p => p.price < 200, products), // products를 받아서 => filter하겠다.
+        products => map(p => p.price, products), // products를 받아서 => map을 하겠다. (결과 : 가격들)
+        prices => reduce(add, prices), //prices가격들을 받아서 => reduce로 축약하기
+        log);
 </script>
