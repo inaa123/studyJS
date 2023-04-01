@@ -54,18 +54,19 @@
     //위 코드를 더 간결하게 만들기
     const add = (a, b) => a + b;
 
-    const sum = (f, iter) => go (
+    const sum = curry((f, iter) => go (
         iter,
         map(f), //여기에 f를 위임하고 iter를 전달한다.!
-        reduce((a, b) => a + b));
+        reduce((a, b) => a + b)));
     
-    const total_quantity = products => 
-        sum(p => p.quantity, products);
-
+    const total_quantity = sum(p => p.quantity);
+    /* products => sum(p => p.quantity)(products);을 간결하게 만듦. products를 받는 함수가 sum이 리턴하는 함수에 products를 전달하고만  있기 때문에 
+        ㄴ요기!! products를 받는 자리에! sum(p=>p.quantity)코드로 대신 평가해도 똑같이 동작함!
+    */
     log(total_quantity(products));
 
     const total_price = products => 
-        sum(p => p.price * p.quantity, products);
+        sum(p => p.price * p.quantity)(products);
     log(total_price(products));
 </script>
 
