@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML 출력해보기 - 장바구니</title>
+    <script src="lib/fx.js"></script>
+</head>
+<body>
+
+<div id="cart">
+
+</div>
+
+<script>
+    const products = [
+        {name: '티셔츠', price: 15000, quantity: 1},
+        {name: '후드티', price: 20000, quantity: 2},
+        {name: '모자', price: 15000, quantity: 3},
+        {name: '아우터', price: 30000, quantity: 4},
+        {name: '바지', price: 25000, quantity: 5}
+    ];
+
+    /*
+    장바구니에 담긴 모든 상품의 총 수량 뽑기
+    go(products, //products를 통해서 quantity만 남겨놓고, reduce로 축약하기
+        map(p => p.quantity), //[1,2,3,4,5]가 담긴 배열
+        reduce((a, b) => a + b),
+        log);
+    */
+
+    /*
+    const total_quantity = products => go(products, 
+        map(p => p.quantity),
+        reduce((a, b) => a + b)); //products가 들어오면 수량 리턴(go)해주는 함수!
+
+    32번줄 products => go(products, products를 받아서 go에 products를 넣는다는 말은
+    저 부분이 pipe ( )로 바뀔 수 있다는 말이다! 아래 41번줄참고!
+    */
+
+    /*
+    //총 수량 (위에 코드를 함수로 만들기!total_quantity)
+    const total_quantity = pipe( 
+        map(p => p.quantity),
+        reduce((a, b) => a + b)); //products가 들어오면 수량 리턴(go)해주는 함수!
+    log(total_quantity(products));
+
+    //전체 금액
+    const total_price = pipe( 
+        map(p => p.price * p.quantity),
+        reduce((a, b) => a + b));
+    log(total_price(products));
+    */
+   
+    //위 코드를 더 간결하게 만들기
+    const add = (a, b) => a + b;
+
+    const sum = (f, iter) => go (
+        iter,
+        map(f), //여기에 f를 위임하고 iter를 전달한다.!
+        reduce((a, b) => a + b));
+    
+    const total_quantity = products => 
+        sum(p => p.quantity, products);
+
+    log(total_quantity(products));
+
+    const total_price = products => 
+        sum(p => p.price * p.quantity, products);
+    log(total_price(products));
+</script>
+
+</body>
+</html>
