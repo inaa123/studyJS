@@ -75,8 +75,18 @@
                 <th>수량</th>
                 <th>총 가격</th>
             </tr>
-            ${go(products,
-                map(p => `
+            ${go(products, sum(p => ` 
+                        <tr>
+                            <td>${p.name}</td>
+                            <td>${p.price}</td>
+                            <td><input type="number" value="${p.quantity}"></td>
+                            <td>${p.price * p.quantity}</td>
+                        </tr>
+                    `)
+                /*
+                //각각의 product에 해당하는 html string을 리턴하면 되기 때문에 map사용! 즉, 각 product하나에 해당하는 tr에 html문자열을 리턴하는 것
+                //p => 프로덕트를 받아서 template literal을 이용하여...
+                map(p => ` 
                     <tr>
                         <td>${p.name}</td>
                         <td>${p.price}</td>
@@ -84,8 +94,12 @@
                         <td>${p.price * p.quantity}</td>
                     </tr>
                 `),
-                reduce(add), //map에서 array리턴해서 웹페이지에 ....이 생김 이걸 없애기위해 reduce사용
-            )}
+                //map함수가 array리턴해서 웹페이지에 ....이 생김 이걸 없애기위해 문자열 더하기를 통해 array가 아닌 하나의 값으로 만든다(reduce사용)
+                reduce(add)
+                 !!!이 코드를 sum함수로 이용할수 있음! sum함수(map(f) / reduce(add)파이프라인으로 연결되어 있따. 위랑 똑같음! map(f) reduce(add)..)
+                 sum함수는 무엇이든 map함수에 적용될 f함수가 리턴하는 값들을 다 add로 축약해주는 함수다. 여기도 사용가능(위 참조, map대신 sum 쓰고 reduce지움)
+                */
+            )}  
             <tr>
                 <td colspan="2">합계</td>
                 <td>${total_quantity(products)}</td>
