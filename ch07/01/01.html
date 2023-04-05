@@ -39,5 +39,16 @@
     log(list);
     log(list.next().value);
    // log(reduce(add, list)); 
+</script>
 
+<!-- range와 L.range 테스트!(효율성?) -->
+<script>
+    function test(name, time, f) { //name :test이름, time:얼마나실행할지, f:실행할함수를 받는다.
+        console.time(name);
+        while(time--) f(); //time만큼 실행
+        console.timeEnd(name);
+    }
+
+    test('range', 10, () => reduce(add, range(1000000))); //test실행.. 10번정도 반복, 함수를 전달하면서 reduce할거임.
+    test('L.range', 10, () => reduce(add, L.range(1000000)));
 </script>
